@@ -12,7 +12,8 @@ var err error
 
 func SignupPage(res http.ResponseWriter, req *http.Request) {
 	if req.Method != "POST" {
-		http.ServeFile(res, req, "/Users/mmdc/go-work/src/indragolangweb/apps/views/signup.html")
+		config.GetPath()
+		http.ServeFile(res, req, config.PathView+"/signup.html")
 		return
 	}
 
@@ -50,7 +51,8 @@ func SignupPage(res http.ResponseWriter, req *http.Request) {
 
 func LoginPage(res http.ResponseWriter, req *http.Request) {
 	if req.Method != "POST" {
-		http.ServeFile(res, req, "/Users/mmdc/go-work/src/indragolangweb/apps/views/login.html")
+		config.GetPath()
+		http.ServeFile(res, req, config.PathView+"login.html")
 		return
 	}
 

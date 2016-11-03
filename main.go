@@ -9,14 +9,19 @@ import (
 	"net/http"
 	_ "indragolangweb/apps/controllers"
 	"indragolangweb/apps/controllers"
+	"indragolangweb/config"
 )
 
+var PathView string
 func homePage(res http.ResponseWriter, req *http.Request) {
-	http.ServeFile(res, req, "/Users/mmdc/go-work/src/indragolangweb/apps/views/index.html")
+
+	PathView = config.PathView
+	http.ServeFile(res, req, PathView+"/index.html")
 }
 
 func main() {
 
+	config.GetPath()
 
 	http.HandleFunc("/signup", controllers.SignupPage)
 	http.HandleFunc("/login", controllers.LoginPage)

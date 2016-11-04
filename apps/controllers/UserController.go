@@ -6,6 +6,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"indragolangweb/config"
+	"indragolangweb/apps/models"
 )
 
 var err error
@@ -20,39 +21,38 @@ func SignupPage(res http.ResponseWriter, req *http.Request) {
 	username := req.FormValue("username")
 	password := req.FormValue("password")
 
-	var user string
 
-	config.ConnectDB()
-	err := config.Debe.QueryRow("SELECT username FROM users WHERE username=?", username).Scan(&user)
+	err = models.GetUser(username)
 
 	switch {
-	case err == sql.ErrNoRows:
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-		if err != nil {
+		case err == sql.ErrNoRows:
+			hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+			if err != nil {
+				http.Error(res, "Server error, unable to create your account.", 500)
+				return
+			}
+
+			err = models.InsertUser(username,hashedPassword)
+
+			if err != nil {
+				http.Error(res, "Server error, unable to create your account.", 500)
+				return
+			}
+
+			res.Write([]byte("User created!"))
+			return
+		case err != nil:
 			http.Error(res, "Server error, unable to create your account.", 500)
 			return
-		}
-
-		_, err = config.Debe.Exec("INSERT INTO users(username, password) VALUES(?, ?)", username, hashedPassword)
-		if err != nil {
-			http.Error(res, "Server error, unable to create your account.", 500)
-			return
-		}
-
-		res.Write([]byte("User created!"))
-		return
-	case err != nil:
-		http.Error(res, "Server error, unable to create your account.", 500)
-		return
-	default:
-		http.Redirect(res, req, "/", 301)
+		default:
+			http.Redirect(res, req, "/", 301)
 	}
 }
 
 func LoginPage(res http.ResponseWriter, req *http.Request) {
 	if req.Method != "POST" {
 		config.GetPath()
-		http.ServeFile(res, req, config.PathView+"login.html")
+		http.ServeFile(res, req, config.PathView+"/login.html")
 		return
 	}
 
@@ -62,21 +62,22 @@ func LoginPage(res http.ResponseWriter, req *http.Request) {
 	var databaseUsername string
 	var databasePassword string
 
-	config.ConnectDB()
 
-	err := config.Debe.QueryRow("SELECT username, password FROM users WHERE username=?", username).Scan(&databaseUsername, &databasePassword)
 
+	var userData models.UserData = models.GetUserLogin(username,databaseUsername,databasePassword)
+
+
+	if userData.Err != nil {
+		http.Redirect(res, req, "/login", 301)
+		return
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(userData.DatabasePassword), []byte(password))
 	if err != nil {
 		http.Redirect(res, req, "/login", 301)
 		return
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(databasePassword), []byte(password))
-	if err != nil {
-		http.Redirect(res, req, "/login", 301)
-		return
-	}
-
-	res.Write([]byte("Hello " + databaseUsername))
+	res.Write([]byte("Hello " + userData.DatabaseUser))
 
 }

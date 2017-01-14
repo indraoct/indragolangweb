@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="GOPATH &lt;indragolangweb&gt;">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../indraoctama" />
+      <root url="file://$PROJECT_DIR$/../indraakses" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../indraoctama" />
+      <root url="file://$PROJECT_DIR$/../indraakses" />
+    </SOURCES>
+    <excluded>
+      <root url="file://$PROJECT_DIR$" />
+    </excluded>
+  </library>
+</component>

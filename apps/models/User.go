@@ -17,7 +17,8 @@ func GetUser(username string) error{
 
 	var user string
 	config.ConnectDB()
-	var err = config.Debe.QueryRow("SELECT username FROM users WHERE username=?", username).Scan(&user)
+	var err = config.Db.QueryRow("SELECT username FROM users WHERE username=?", username).Scan(&user)
+	config.CloseDB()
 
 	return err
 
@@ -29,8 +30,8 @@ func GetUser(username string) error{
 func GetUserLogin(username,databaseUsername,databasePassword string) UserData{
 
 	config.ConnectDB()
-	var err = config.Debe.QueryRow("SELECT username, password FROM users WHERE username=?", username).Scan(&databaseUsername, &databasePassword)
-
+	var err = config.Db.QueryRow("SELECT username, password FROM users WHERE username=?", username).Scan(&databaseUsername, &databasePassword)
+	config.CloseDB()
 	u := UserData{err, databaseUsername,databasePassword}
 
 	return u
@@ -43,7 +44,8 @@ func GetUserLogin(username,databaseUsername,databasePassword string) UserData{
 func InsertUser(username string,hashedPassword []byte) error{
 
 	config.ConnectDB()
-	var _, err = config.Debe.Exec("INSERT INTO users(username, password) VALUES(?, ?)", username, hashedPassword)
+	var _, err = config.Db.Exec("INSERT INTO users(username, password) VALUES(?, ?)", username, hashedPassword)
+	config.CloseDB()
 
 	return err
 }

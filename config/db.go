@@ -1,3 +1,7 @@
+/**
+ * Updated Date : 14 January 2017
+ * Make Function close database
+ */
 package config
 
 import (
@@ -5,17 +9,23 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var Debe *sql.DB
+var Db *sql.DB
 
 func ConnectDB(){
 
 	var err error
-	Debe, err =  sql.Open("mysql", "root@/golang")
+	Db, err =  sql.Open("mysql", "root:blink182@/golang")
 	if err != nil {
 		panic(err.Error())
 	}
-	if err = Debe.Ping(); err != nil {
+	if err = Db.Ping(); err != nil {
 		panic(err.Error())
 	}
+
+}
+
+func CloseDB(){
+
+	Db.Close()
 
 }

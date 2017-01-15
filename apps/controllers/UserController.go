@@ -10,6 +10,7 @@ import (
 
 var err error
 
+
 func SignupPage(res http.ResponseWriter, req *http.Request) {
 	if req.Method != "POST" {
 		config.GetPath()
@@ -79,4 +80,27 @@ func LoginPage(res http.ResponseWriter, req *http.Request) {
 
 	res.Write([]byte("Hello " + userData.DatabaseUser))
 
+}
+
+func UserList(res http.ResponseWriter, req *http.Request){
+
+	config.GetPath()
+	http.ServeFile(res, req, config.PathView+"/list.html")
+	return
+
+}
+
+/**
+ * API Get Data User
+ */
+
+func UserData(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	if r.Method == "GET" {
+		var data,_  = models.GetuserList()
+		w.Write([]byte(data))
+		return
+	}
+	http.Error(w, "", http.StatusBadRequest)
 }

@@ -7,7 +7,6 @@ package main
 
 import (
 	"net/http"
-	_ "indragolangweb/apps/controllers"
 	"indragolangweb/apps/controllers"
 	"indragolangweb/config"
 )
@@ -20,11 +19,23 @@ func homePage(res http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-
 	config.GetPath()
 
+	/**
+	 * Web Display
+	 */
 	http.HandleFunc("/signup", controllers.SignupPage)
 	http.HandleFunc("/login", controllers.LoginPage)
+	http.HandleFunc("/user/list", controllers.UserList)
 	http.HandleFunc("/", homePage)
+
+	/**
+	 * API
+	 */
+	http.HandleFunc("/api/userdata", controllers.UserData)
+
+	/**
+	 * Listening To Server
+	 */
 	http.ListenAndServe(":8181", nil)
 }

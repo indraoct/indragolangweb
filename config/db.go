@@ -26,6 +26,6 @@ func ConnectDB(){
 
 func CloseDB(){
 
-	Db.Close()
+      defer Db.Close()
 
 }

@@ -44,6 +44,7 @@ func GetuserList() (string, error) {
 		return "", err
 	}
 	defer rows.Close()
+	config.CloseDB()
 	columns, err := rows.Columns()
 	if err != nil {
 		return "", err

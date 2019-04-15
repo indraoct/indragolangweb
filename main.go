@@ -28,6 +28,7 @@ func main() {
 	http.HandleFunc("/login", controllers.LoginPage)
 	http.HandleFunc("/user/list", controllers.UserList)
 	http.HandleFunc("/", homePage)
+	http.HandleFunc("/emas",controllers.ResponseDummy)
 
 	/**
 	 * API
@@ -37,5 +38,5 @@ func main() {
 	/**
 	 * Listening To Server
 	 */
-	http.ListenAndServe(":8181", nil)
+	http.ListenAndServe(":10099", nil)
 }

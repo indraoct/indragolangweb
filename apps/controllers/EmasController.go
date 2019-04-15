@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -15,6 +16,8 @@ type PayResponseSuccess struct {
 func ResponseDummy(w http.ResponseWriter, req *http.Request){
 	w.Header().Set("Content-Type", "application/json")
 	var response PayResponseSuccess
+	
+	fmt.Println(req.GetBody)
 	
 	response.ResponseCode = "00"
 	response.ResponseDesc.Id = "Sukses"
